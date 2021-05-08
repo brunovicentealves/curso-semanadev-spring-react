@@ -1,27 +1,33 @@
 
 import axios from 'axios';
+import { useEffect, useState } from 'react';
 import Chart from 'react-apexcharts';
 import { SaleSum } from 'types/sale';
 import { BASE_URL } from 'utils/request';
 
-type CharData = {
+type ChartData = {
     labels : string[];
     series:number[];
 }
 
 function Donutchart() {
 
-    //forma errada
-    let chartData : CharData = {labels:[],series:[]};
 
-    axios.get(`${BASE_URL}/sales/amount-by-seller`)
-    .then(response =>{
-        const data = response.data as SaleSum[];
-        const mylabels = data.map(x=> x.sellerName);
-        const myseries = data.map(x=> x.sum);
-        chartData =  {labels:mylabels,series:myseries};
-        console.log(chartData)
-    });
+    const [chartData , setChartData] = useState<ChartData>({labels:[],series:[]});
+
+    useEffect(()=>{
+        axios.get(`${BASE_URL}/sales/amount-by-seller`)
+        .then(response =>{
+            const data = response.data as SaleSum[];
+            const mylabels = data.map(x=> x.sellerName);
+            const myseries = data.map(x=> x.sum);
+            
+            setChartData ({labels:mylabels,series:myseries}) ;
+            
+        });
+    },[]);
+
+    
 
 
 
